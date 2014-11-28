@@ -132,5 +132,6 @@ public class TileGridPane extends Pane {
 	public void reset()
 	{
 		for (int i=0;i<myTableRows;i++) for (int j=0;j<myTableColumns;j++) myTiles[i][j]=null;
+		this.getChildren().clear();
 	}
 }
