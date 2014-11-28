@@ -15,12 +15,12 @@ public class TileGridPane extends Pane {
 	//Members
 	private int myTableRows;
     private int myTableColumns;
-    NumberRectangle[][] myTiles;// = new int[TableSize][TableSize];
+    private NumberRectangle[][] myTiles;// = new int[TableSize][TableSize];
 	public TileGridPane(int width,int height) {
 		super();
 		myTableRows=height;
 		myTableColumns=width;
-		NumberRectangle[][] myTiles= new NumberRectangle[myTableRows][myTableColumns];
+		this.myTiles= new NumberRectangle[myTableRows][myTableColumns];
 		ObservableDoubleValue moo = this.widthProperty().divide(400).add(1);
 		DoubleBinding myStrokeWidthBinding=new DoubleBinding() {
 		     {super.bind(moo);}
@@ -45,7 +45,6 @@ public class TileGridPane extends Pane {
 			     {super.bind(myXPositionObservable);}
 				@Override
 				protected double computeValue() {
-					// TODO Auto-generated method stub
 					return myXPositionObservable.doubleValue();
 				}
 			};
@@ -70,7 +69,6 @@ public class TileGridPane extends Pane {
 			     {super.bind(myYPositionObservable);}
 				@Override
 				protected double computeValue() {
-					// TODO Auto-generated method stub
 					return myYPositionObservable.doubleValue();
 				}
 			};
@@ -105,7 +103,6 @@ public class TileGridPane extends Pane {
 			     {super.bind(myLayoutXObservable);}
 				@Override
 				protected double computeValue() {
-					// TODO Auto-generated method stub
 					return myLayoutXObservable.doubleValue();
 				}
 			};
@@ -115,7 +112,6 @@ public class TileGridPane extends Pane {
 			     {super.bind(myLayoutYObservable);}
 				@Override
 				protected double computeValue() {
-					// TODO Auto-generated method stub
 					return myLayoutYObservable.doubleValue();
 				}
 			};
