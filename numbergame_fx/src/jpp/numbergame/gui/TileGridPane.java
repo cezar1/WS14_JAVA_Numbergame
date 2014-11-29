@@ -127,11 +127,20 @@ public class TileGridPane extends Pane {
 	}
 	public void moveRectangle(Move move)
 	{
-		this.myTiles[move.getFrom().getX()][move.getFrom().getY()].moveTo(move.getTo().getX(),move.getTo().getY());
+		int x_Origin,y_Origin,x_Destination,y_Destination;
+		x_Origin=move.getFrom().getX();
+		y_Origin=move.getFrom().getY();
+		x_Destination=move.getTo().getX();
+		y_Destination=move.getTo().getY();
+		this.myTiles[x_Origin][y_Origin].moveTo(x_Destination,y_Destination);
+		Tile newTile=new Tile(move.getTo(), myTiles[x_Origin][y_Origin].getValue());
+		//this.myTiles[x_Origin][y_Origin]=null;
+		//this.getChildren().remove(index)
+		//this.myTiles[x_Destination][y_Destination]=this.myTiles[x_Origin][y_Origin].
 	}
 	public void reset()
 	{
 		for (int i=0;i<myTableRows;i++) for (int j=0;j<myTableColumns;j++) myTiles[i][j]=null;
-		this.getChildren().clear();
+		//this.getChildren().clear();
 	}
 }

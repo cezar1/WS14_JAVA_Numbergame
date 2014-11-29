@@ -24,7 +24,12 @@ public class NumberGui extends Application {
 	private Label pointsValue;
 	
 	private boolean gameIsLost = false;
-	
+	public void initGame()
+	{
+		this.game=new NumberGame(4, 4);
+		this.gamePane.addTile(this.game.addRandomTile());
+		this.gamePane.addTile(this.game.addRandomTile());
+	}
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
@@ -45,8 +50,7 @@ public class NumberGui extends Application {
 		primaryStage.show();
 		primaryStage.setMinHeight(300);
 		primaryStage.setMinWidth(300);
-		game=new NumberGame(4, 4);
-		game.addRandomTile();game.addRandomTile();
+		initGame();
 		primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 	        @Override
 	        public void handle(KeyEvent keyEvent) {
@@ -78,7 +82,7 @@ public class NumberGui extends Application {
 		{
 			this.gamePane.moveTiles(result);
 			this.pointsValue.setText(String.valueOf(this.game.getPoints()));
-			this.game.addRandomTile();
+			this.gamePane.addTile(this.game.addRandomTile());
 		}
 		else this.gamePane.showFadingMessage("Move not possible");
 		if (this.game.canMove()==false) {
@@ -88,10 +92,10 @@ public class NumberGui extends Application {
 	}
 	private void restartGame()
 	{
-		this.game=new NumberGame(4,4);
+		initGame();
 		this.gamePane.reset();
-		game.addRandomTile();game.addRandomTile();
 		this.gameIsLost=false;
+		//this.gamePane.showFadingMessage("Resseting");
 		
 	}
 	public static void main(String[] args)
