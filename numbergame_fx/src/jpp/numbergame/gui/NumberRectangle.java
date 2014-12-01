@@ -40,6 +40,7 @@ public class NumberRectangle extends StackPane {
 	private DoubleProperty rectHeightProperty=new SimpleDoubleProperty();
 	private DoubleProperty rectWidthProperty=new SimpleDoubleProperty();
 	private Timeline myTimeLine=new Timeline();
+	private IntegerProperty value_test = new SimpleIntegerProperty();
 	private int Value;
 	private double X;
 	private double Y;
@@ -47,8 +48,8 @@ public class NumberRectangle extends StackPane {
 	public NumberRectangle(int x, int y, int initialValue) {
 		super();
 		System.out.println("Creating new numberRectangle @ ("+x+","+y+")");
-		//this.xProperty.set(x);
-		//this.yProperty.set(y);
+		this.xProperty.set(x);
+		this.yProperty.set(y);
 		//this.xProperty.setValue(this.rectHeightProperty.multiply(x).add(2).getValue());
 		//this.yProperty.setValue(this.rectHeightProperty.multiply(y).add(2).getValue());
 		this.myEnclosedRect.xProperty().bind(this.layoutXProperty());
@@ -57,8 +58,9 @@ public class NumberRectangle extends StackPane {
 		this.myText.yProperty().bind(this.layoutYProperty());
 		//this.myEnclosedRect.setY(100);
 		//this.
-		//this.setPadding(new Insets(myPadding,myPadding,myPadding,myPadding));
+		this.setPadding(new Insets(5,5,5,5));
 		this.myEnclosedRect.setArcWidth(myArcWidth);
+		this.myEnclosedRect.setArcHeight(myArcWidth);
 		//this.myEnclosedRect.setHeight(this.rectHeightProperty.doubleValue()+10);//EXTRA DEBUG
 		//this.myEnclosedRect.setWidth(this.rectWidthProperty.doubleValue()+10);//EXTRA DEBUG
 		this.myEnclosedRect.heightProperty().bind(this.rectHeightProperty);
@@ -71,25 +73,58 @@ public class NumberRectangle extends StackPane {
 		ds.setColor(Color.BLACK);
 		this.myText.setEffect(ds);
 		Value=initialValue;
-		myText.setText("2");//EXTRA DEBUG
-        this.layoutXProperty().addListener(new ChangeListener<Number>() {
+//		myText.setText("2");//EXTRA DEBUG
+		
+        value_test.addListener(new ChangeListener<Number>() {
 
             @Override
-            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {           	
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) { 
+				myText.setText(t1.toString());
                 System.out.println("NumberRectangle layoutXProperty changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
             }
-
-
         });
-        this.layoutYProperty().addListener(new ChangeListener<Number>() {
+        value_test.addListener(new ChangeListener<Number>() {
 
             @Override
-            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {           	
-                System.out.println("NumberRectangle layoutYProperty changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) { 
+				FillTransition ft = new FillTransition(Duration.millis(150), myEnclosedRect);
+				ft.setToValue(calcColor(t1.doubleValue()));
+				ft.play();
+                System.out.println("NumberRectangle Color changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
             }
 
 
         });
+        setX(x);
+		setY(y);
+		setValue(initialValue);
+		myEnclosedRect.boundsInLocalProperty().addListener(new ChangeListener<Bounds>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Bounds> target, Bounds Old, Bounds New) { 
+            	
+            	Bounds tempBounds = myText.getBoundsInLocal();
+				double scalex = New.getWidth() / tempBounds.getWidth();
+				myText.setScaleX(scalex);
+				myText.setScaleY(scalex);
+                System.out.println("NumberRectangle layoutYProperty changed from "+Old+" to "+New+".");
+            }
+
+
+        });
+		
+		myText.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> target, String oldValue, String newValue) {
+				Bounds rb = myEnclosedRect.getBoundsInLocal();
+				Bounds tb = myEnclosedRect.getBoundsInLocal();
+				double scalex = rb.getWidth() / tb.getWidth();
+				myText.setScaleX(scalex);
+				myText.setScaleY(scalex);
+				System.out.println("Listener on Text for TextProperty!");
+			}
+		});
+		
 //		valueProperty.addListener(new ChangeListener<Number>()
 //				{
 //					@Override
@@ -115,32 +150,42 @@ public class NumberRectangle extends StackPane {
 //					}
 //				}
 //		);
-		myEnclosedRect.boundsInLocalProperty().addListener(new ChangeListener<Bounds>()
-				{
-					@Override
-					public void changed(ObservableValue<? extends Bounds> arg0,
-							Bounds oldVal, Bounds newVal) {
-						Double myNewScale=newVal.getWidth()/myText.boundsInLocalProperty().getValue().getWidth();
-						myText.setScaleX(myNewScale);
-						myText.setScaleY(myNewScale);
-						System.out.println("Listener on Bounds for BoundsInLocalProperty!");
-					}
-				}
-		);
-		myText.textProperty().addListener(new ChangeListener<String>()
-				{
-					@Override
-					public void changed(ObservableValue<? extends String> arg0,
-							String oldVal, String newVal) {
-						double myNewScale=myEnclosedRect.boundsInLocalProperty().getValue().getWidth()/myText.boundsInLocalProperty().getValue().getWidth();
-						myText.setScaleX(myNewScale);
-						myText.setScaleY(myNewScale);
-						//myEnclosedRect.setHeight(myBaseRectSize-2*myPadding);
-						//myEnclosedRect.setWidth(myBaseRectSize-2*myPadding);
-						System.out.println("Listener on Text for TextProperty!");
-					}
-				}
-		);
+//		myEnclosedRect.boundsInLocalProperty().addListener(new ChangeListener<Bounds>()
+//				{
+//					@Override
+//					public void changed(ObservableValue<? extends Bounds> arg0,
+//							Bounds oldVal, Bounds newVal) {
+//						Double myNewScale=newVal.getWidth()/myText.boundsInLocalProperty().getValue().getWidth();
+//						myText.setScaleX(myNewScale);
+//						myText.setScaleY(myNewScale);
+//						System.out.println("Listener on Bounds for BoundsInLocalProperty!");
+//					}
+//				}
+//		);
+//		myText.textProperty().addListener(new ChangeListener<String>()
+//				{
+//					@Override
+//					public void changed(ObservableValue<? extends String> arg0,
+//							String oldVal, String newVal) {
+//						double myNewScale=myEnclosedRect.boundsInLocalProperty().getValue().getWidth()/myText.boundsInLocalProperty().getValue().getWidth();
+//						myText.setScaleX(myNewScale);
+//						myText.setScaleY(myNewScale);
+//						//myEnclosedRect.setHeight(myBaseRectSize-2*myPadding);
+//						//myEnclosedRect.setWidth(myBaseRectSize-2*myPadding);
+//						System.out.println("Listener on Text for TextProperty!");
+//					}
+//				}
+//		);
+		
+//		myEnclosedRect.widthProperty().bind(rectWidthProperty.subtract(5 * 2));
+//		myEnclosedRect.heightProperty().bind(rectHeightProperty.subtract(5 * 2));
+
+		getChildren().addAll(new Node[] { myEnclosedRect, myText });
+		System.out.println("Salí");
+	}
+	private Color calcColor(double value) {
+		double fract = Math.log(value) / Math.log(2048);
+		return Color.PALEGOLDENROD.interpolate(Color.DARKRED, fract > 1d ? 1d : fract);
 	}
 	public void moveTo(int x, int y)
 	{
@@ -183,12 +228,12 @@ public class NumberRectangle extends StackPane {
 	public void setRectWidthProperty(DoubleProperty rectWidthProperty) {
 		this.rectWidthProperty = rectWidthProperty;
 	}
-	public int getValue() {
-		return Value;
-	}
-	public void setValue(int value) {
-		Value = value;
-	}
+//	public int getValue() {
+//		return Value;
+//	}
+//	public void setValue(int value) {
+//		Value = value;
+//	}
 	public double getX() {
 		return X;
 	}
@@ -207,5 +252,25 @@ public class NumberRectangle extends StackPane {
 	public Text getMyText() {
 		return myText;
 	}
+	public int getValue() {
+		return value_test.get();
+	}
 
+	/**
+	 * Set the numeric value
+	 *
+	 * @param newValue new value
+	 */
+	public void setValue(int newValue) {
+		value_test.set(newValue);
+	}
+
+	/**
+	 * Get the numeric value as a property
+	 *
+	 * @return value property
+	 */
+	public IntegerProperty valueProperty() {
+		return value_test;
+	}
 }
