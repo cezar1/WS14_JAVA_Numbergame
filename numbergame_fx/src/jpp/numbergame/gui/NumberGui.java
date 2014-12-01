@@ -31,10 +31,11 @@ public class NumberGui extends Application {
 	private boolean gameIsLost = false;
 	public void initGame()
 	{
+		this.game=null;
 		this.game=new NumberGame(4, 4);
-		//this.gamePane.addTile(this.game.addRandomTile());
-		//this.gamePane.addTile(this.game.addRandomTile());
-		this.gamePane.addTile(this.game.addTile(1, 1, 2));
+		this.gamePane.addTile(this.game.addRandomTile());
+		this.gamePane.addTile(this.game.addRandomTile());
+		//this.gamePane.addTile(this.game.addTile(2, 0, 3));
 		this.pointsValue.setText("0");
 	}
 	@Override
@@ -53,13 +54,6 @@ public class NumberGui extends Application {
 		myTopBar.getChildren().add(myLabelPoints);myTopBar.getChildren().add(pointsValue);
 		myRootPane.setTop(myTopBar);
 		
-		//EXTRA DEBUG
-//		Rectangle myTestRectangle=new Rectangle();
-//		myTestRectangle.setX(100);
-//		myTestRectangle.setY(100);
-//		myTestRectangle.setWidth(10);
-//		myTestRectangle.setHeight(10);
-//		myRootPane.getChildren().add(myTestRectangle);
 		
 		myRootPane.setCenter(gamePane);
 		primaryStage.setScene(new Scene(myRootPane, 300, 300));

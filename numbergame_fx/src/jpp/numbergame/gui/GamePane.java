@@ -76,7 +76,7 @@ public class GamePane extends StackPane {
 	public void reset()
 	{
 		this.canvas.reset();
-		fadeOutMessage();
+		//fadeOutMessage();
 	}
 	public void showFadingMessage(String text)
 	{

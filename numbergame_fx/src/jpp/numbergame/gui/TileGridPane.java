@@ -2,6 +2,7 @@ package jpp.numbergame.gui;
 
 import java.util.List;
 
+import javafx.animation.FadeTransition;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -10,6 +11,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.util.Duration;
+import jpp.numbergame.Coordinate2D;
 import jpp.numbergame.Move;
 import jpp.numbergame.Tile;
 
@@ -136,8 +139,8 @@ public class TileGridPane extends Pane {
 					return myLayoutXObservable.doubleValue();
 				}
 			};
-			this.myTiles[x][y].layoutXProperty().bind(myLayoutXDoubleBinding);
-			ObservableDoubleValue myLayoutYObservable = tileHeightBinding().multiply(y).add(myPadding/2.0);
+			this.myTiles[x][y].getxProperty().bind(myLayoutXDoubleBinding);
+			ObservableDoubleValue myLayoutYObservable = tileHeightBinding().multiply(y);//.add(myPadding/2.0);
 			DoubleBinding myLayoutYDoubleBinding=new DoubleBinding() {
 			     {super.bind(myLayoutYObservable);}
 				@Override
@@ -145,20 +148,17 @@ public class TileGridPane extends Pane {
 					return myLayoutYObservable.doubleValue();
 				}
 			};
-			this.myTiles[x][y].layoutYProperty().bind(myLayoutYDoubleBinding);
-			this.myTiles[x][y].getRectHeightProperty().bind(tileHeightBinding().subtract(myPadding));
-			this.myTiles[x][y].getRectWidthProperty().bind(tileWidthBinding().subtract(myPadding));
+			this.myTiles[x][y].getyProperty().bind(myLayoutYDoubleBinding);
+			this.myTiles[x][y].getRectHeightProperty().bind(tileHeightBinding().subtract(0));
+			this.myTiles[x][y].getRectWidthProperty().bind(tileWidthBinding().subtract(0));
 			this.getChildren().add(this.myTiles[x][y].getMyEnclosedRect());
 			this.getChildren().add(this.myTiles[x][y].getMyText());
-			
-//			//EXTRA DEBUG
-//			Rectangle myTestRectangle=new Rectangle();
-//			myTestRectangle.setX(100);
-//			myTestRectangle.setY(100);
-//			myTestRectangle.setWidth(10);
-//			myTestRectangle.setHeight(10);
-//			this.getChildren().add(myTestRectangle);
-			
+//			Coordinate2D start=new Coordinate2D(2, 0);
+//			Coordinate2D end=new Coordinate2D(0, 0);
+			this.myTiles[x][y].getxProperty().unbind();
+			this.myTiles[x][y].getyProperty().unbind();
+//			Move testMove=new Move(start, end, 2048);
+//			moveRectangle(testMove);
 		}
 	}
 	public void moveRectangles(List<Move> moves)
@@ -174,12 +174,23 @@ public class TileGridPane extends Pane {
 		y_Origin=move.getFrom().getY();
 		x_Destination=move.getTo().getX();
 		y_Destination=move.getTo().getY();
-		this.myTiles[x_Origin][y_Origin].moveTo(x_Destination,y_Destination);
-		Tile newTile=new Tile(move.getTo(), myTiles[x_Origin][y_Origin].getValue());
-		this.addRectangle(newTile);
-		//this.myTiles[x_Origin][y_Origin]=null;
-		//this.getChildren().remove(index)
-		//this.myTiles[x_Destination][y_Destination]=this.myTiles[x_Origin][y_Origin].
+		NumberRectangle target=this.myTiles[x_Origin][y_Origin];//
+		target.moveTo(x_Destination,y_Destination);
+		
+		if (move.isMerge())
+		{
+			NumberRectangle toBeRemoved=this.myTiles[x_Destination][x_Destination];
+			FadeTransition fadeTransition = new FadeTransition(Duration.millis(150), toBeRemoved);
+			fadeTransition.setFromValue(1d);
+			fadeTransition.setToValue(0d);
+			fadeTransition.play();
+			this.getChildren().remove(toBeRemoved);
+			target.setValue(move.getNewValue());
+		}
+		this.myTiles[x_Destination][y_Destination]=target;//.moveTo(x_Destination,y_Destination);
+
+		this.myTiles[x_Origin][y_Origin]=null;
+
 	}
 	public void reset()
 	{
