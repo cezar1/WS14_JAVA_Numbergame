@@ -31,7 +31,7 @@ public class GamePane extends StackPane {
 	{
 		canvas=new TileGridPane(width,height);
 		message=new Text();
-		message.setOpacity(0d);
+		//message.setOpacity(0d);
 		message.setFill(Color.DARKRED);
 		message.setFont(new Font(myMessageFontSize));
 		DropShadow ds = new DropShadow();
@@ -45,14 +45,20 @@ public class GamePane extends StackPane {
 			public void changed(ObservableValue<? extends Bounds> arg0,
 					Bounds oldValBounds, Bounds newValBounds) {
 				// TODO Auto-generated method stub
-				double scaleHeight=newValBounds.getHeight()/message.boundsInLocalProperty().getValue().getHeight();
-				double scaleWidth=newValBounds.getWidth()/message.boundsInLocalProperty().getValue().getWidth();
+				double scaleHeight,scaleWidth;
+				scaleHeight=newValBounds.getHeight()/message.boundsInLocalProperty().getValue().getHeight();
+				scaleWidth=newValBounds.getWidth()/message.boundsInLocalProperty().getValue().getWidth();
 				message.scaleXProperty().set(scaleWidth);
 				message.scaleYProperty().set(scaleHeight);
+				scaleHeight=newValBounds.getHeight()/canvas.boundsInLocalProperty().getValue().getHeight();
+				scaleWidth=newValBounds.getWidth()/canvas.boundsInLocalProperty().getValue().getWidth();
+				canvas.scaleXProperty().set(scaleWidth);
+				canvas.scaleYProperty().set(scaleHeight);
 			}
 		};
-		canvas.boundsInLocalProperty().addListener(myBoundsListener);
-		message.boundsInLocalProperty().addListener(myBoundsListener);
+		//this.boundsInLocalProperty().addListener(myBoundsListener);
+		//canvas.boundsInLocalProperty().addListener(myBoundsListener);
+		//message.boundsInLocalProperty().addListener(myBoundsListener);
 		ft=new FadeTransition(Duration.millis(1000), message);
 		ft.setFromValue(1d);
 		ft.setToValue(0d);

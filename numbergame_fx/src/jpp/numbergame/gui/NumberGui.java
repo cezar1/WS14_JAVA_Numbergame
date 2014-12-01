@@ -19,16 +19,23 @@ import jpp.numbergame.Move;
 import jpp.numbergame.NumberGame;
 
 public class NumberGui extends Application {
+	public static void main(String[] args)
+	{
+		launch(args);
+		
+	}
 	private NumberGame game;
 	private GamePane gamePane;
-	private Label pointsValue;
+	private Label pointsValue=new Label();
 	
 	private boolean gameIsLost = false;
 	public void initGame()
 	{
 		this.game=new NumberGame(4, 4);
-		this.gamePane.addTile(this.game.addRandomTile());
-		this.gamePane.addTile(this.game.addRandomTile());
+		//this.gamePane.addTile(this.game.addRandomTile());
+		//this.gamePane.addTile(this.game.addRandomTile());
+		this.gamePane.addTile(this.game.addTile(1, 1, 2));
+		this.pointsValue.setText("0");
 	}
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -40,17 +47,27 @@ public class NumberGui extends Application {
 		myTopBar.setStyle("-fx-background-color: palegoldenrod; -fx-font-size:1.5em");
 		Label myLabelPoints=new Label();
 		myLabelPoints.setText("Points");
-		Label myLabelActualPoints=new Label();
-		myLabelActualPoints.setText("0");
-		myLabelActualPoints.setStyle("-fx-font-weight: bold; -fx-textfill:darkred;");
-		myTopBar.getChildren().add(myLabelPoints);myTopBar.getChildren().add(myLabelActualPoints);
+		//Label pointsValue=new Label();
+		pointsValue.setText("0");
+		pointsValue.setStyle("-fx-font-weight: bold; -fx-textfill:darkred;");
+		myTopBar.getChildren().add(myLabelPoints);myTopBar.getChildren().add(pointsValue);
 		myRootPane.setTop(myTopBar);
+		
+		//EXTRA DEBUG
+//		Rectangle myTestRectangle=new Rectangle();
+//		myTestRectangle.setX(100);
+//		myTestRectangle.setY(100);
+//		myTestRectangle.setWidth(10);
+//		myTestRectangle.setHeight(10);
+//		myRootPane.getChildren().add(myTestRectangle);
+		
 		myRootPane.setCenter(gamePane);
 		primaryStage.setScene(new Scene(myRootPane, 300, 300));
 		primaryStage.show();
 		primaryStage.setMinHeight(300);
 		primaryStage.setMinWidth(300);
 		initGame();
+		
 		primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 	        @Override
 	        public void handle(KeyEvent keyEvent) {
@@ -98,9 +115,5 @@ public class NumberGui extends Application {
 		//this.gamePane.showFadingMessage("Resseting");
 		
 	}
-	public static void main(String[] args)
-	{
-		launch(args);
-		
-	}
+
 }

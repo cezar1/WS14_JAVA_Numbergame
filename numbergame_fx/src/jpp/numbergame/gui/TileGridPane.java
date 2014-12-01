@@ -4,7 +4,9 @@ import java.util.List;
 
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -12,6 +14,7 @@ import jpp.numbergame.Move;
 import jpp.numbergame.Tile;
 
 public class TileGridPane extends Pane {
+	public static final int myPadding=5;
 	//Members
 	private int myTableRows;
     private int myTableColumns;
@@ -30,6 +33,9 @@ public class TileGridPane extends Pane {
 				return moo.doubleValue();
 			}
 		};
+		
+		
+		
 		//Create horizontal lines
 		for (int i=0;i<myTableRows;i++)
 		{
@@ -76,9 +82,33 @@ public class TileGridPane extends Pane {
 			DoubleProperty myEndYProperty=myLine.endYProperty();
 			myStartYProperty.bind(myYPositionDoubleBinding);
 			myEndYProperty.bind(myYPositionDoubleBinding);
+			
+			
 			this.getChildren().add(myLine);
 		}
+
+        this.widthProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {           	
+                System.out.println("TileGridPane width changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
+            }
+
+
+        });
+        this.heightProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+                System.out.println("TileGridPane height changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
+            }
+
+
+        });
 		
+		
+		System.out.println("TileGridPane width:"+this.getWidth()+".");
+		System.out.println("Created TileGridPane with tileWidth:"+this.tileHeightBinding().doubleValue() +".");
 	}
 	public DoubleBinding tileWidthBinding()
 	{
@@ -98,7 +128,7 @@ public class TileGridPane extends Pane {
 		else
 		{
 			this.myTiles[x][y]=new NumberRectangle(x,y,value);
-			ObservableDoubleValue myLayoutXObservable = tileWidthBinding().multiply(x);
+			ObservableDoubleValue myLayoutXObservable = tileWidthBinding().multiply(x).add(myPadding/2.0);
 			DoubleBinding myLayoutXDoubleBinding=new DoubleBinding() {
 			     {super.bind(myLayoutXObservable);}
 				@Override
@@ -107,7 +137,7 @@ public class TileGridPane extends Pane {
 				}
 			};
 			this.myTiles[x][y].layoutXProperty().bind(myLayoutXDoubleBinding);
-			ObservableDoubleValue myLayoutYObservable = tileHeightBinding().multiply(y);
+			ObservableDoubleValue myLayoutYObservable = tileHeightBinding().multiply(y).add(myPadding/2.0);
 			DoubleBinding myLayoutYDoubleBinding=new DoubleBinding() {
 			     {super.bind(myLayoutYObservable);}
 				@Override
@@ -116,7 +146,19 @@ public class TileGridPane extends Pane {
 				}
 			};
 			this.myTiles[x][y].layoutYProperty().bind(myLayoutYDoubleBinding);
-			this.getChildren().add(this.myTiles[x][y]);
+			this.myTiles[x][y].getRectHeightProperty().bind(tileHeightBinding().subtract(myPadding));
+			this.myTiles[x][y].getRectWidthProperty().bind(tileWidthBinding().subtract(myPadding));
+			this.getChildren().add(this.myTiles[x][y].getMyEnclosedRect());
+			this.getChildren().add(this.myTiles[x][y].getMyText());
+			
+//			//EXTRA DEBUG
+//			Rectangle myTestRectangle=new Rectangle();
+//			myTestRectangle.setX(100);
+//			myTestRectangle.setY(100);
+//			myTestRectangle.setWidth(10);
+//			myTestRectangle.setHeight(10);
+//			this.getChildren().add(myTestRectangle);
+			
 		}
 	}
 	public void moveRectangles(List<Move> moves)
@@ -134,6 +176,7 @@ public class TileGridPane extends Pane {
 		y_Destination=move.getTo().getY();
 		this.myTiles[x_Origin][y_Origin].moveTo(x_Destination,y_Destination);
 		Tile newTile=new Tile(move.getTo(), myTiles[x_Origin][y_Origin].getValue());
+		this.addRectangle(newTile);
 		//this.myTiles[x_Origin][y_Origin]=null;
 		//this.getChildren().remove(index)
 		//this.myTiles[x_Destination][y_Destination]=this.myTiles[x_Origin][y_Origin].
