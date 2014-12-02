@@ -49,10 +49,8 @@ public class NumberRectangle extends StackPane {
 		super();
 		System.out.println("Creating new numberRectangle @ ("+x+","+y+")");
 
-//		this.myEnclosedRect.xProperty().bind(this.layoutXProperty());
-//		this.myEnclosedRect.yProperty().bind(this.layoutYProperty());
-//		this.myText.xProperty().bind(this.layoutXProperty().add(this.rectWidthProperty.divide(2)));
-//		this.myText.yProperty().bind(this.layoutYProperty().add(this.rectHeightProperty.divide(2)));
+		setX(x);
+		setY(y);
 
 		this.myEnclosedRect.setArcWidth(myArcWidth);
 
@@ -71,7 +69,7 @@ public class NumberRectangle extends StackPane {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {     
         		myEnclosedRect.xProperty().set(t1.doubleValue());
-         		myText.xProperty().set(t1.doubleValue());;
+         		myText.xProperty().set(t1.doubleValue()+(rectWidthProperty.doubleValue()/2));
                 System.out.println("NumberRectangle layoutXProperty changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
             }
         });
@@ -79,7 +77,7 @@ public class NumberRectangle extends StackPane {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {     
         		myEnclosedRect.yProperty().set(t1.doubleValue());
-         		myText.yProperty().set(t1.doubleValue()+rectHeightProperty.doubleValue()/2);;
+         		myText.yProperty().set(t1.doubleValue()+(rectHeightProperty.doubleValue()/2));;
                 System.out.println("NumberRectangle layoutYProperty changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
             }
         });
@@ -89,7 +87,8 @@ public class NumberRectangle extends StackPane {
         this.rectWidthProperty.addListener(new ChangeListener<Number>() {
 
             @Override
-            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {           	
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+            	myText.xProperty().set(getxProperty().doubleValue()+(rectWidthProperty.doubleValue()/2));
                 System.out.println("SimpleDoubleProperty rectWidthProperty changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
             }
         });
@@ -97,7 +96,8 @@ public class NumberRectangle extends StackPane {
 
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {           	
-                System.out.println("SimpleDoubleProperty rectHeightProperty changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
+            	myText.yProperty().set(getyProperty().doubleValue()+(rectHeightProperty.doubleValue()/2));;
+            	System.out.println("SimpleDoubleProperty rectHeightProperty changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
             }
         });
 
@@ -219,5 +219,8 @@ public class NumberRectangle extends StackPane {
 	{
 		//myText.setText(String.valueOf(value)+"("+String.valueOf(x)+";"+String.valueOf(y)+")");
 		myText.setText(String.valueOf(value));//+"("+String.valueOf(x)+";"+String.valueOf(y)+")");
+	}
+	public boolean equals(NumberRectangle obj) {
+		return obj.X==this.X && obj.Y==this.Y;
 	}
 }

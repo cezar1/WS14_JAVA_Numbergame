@@ -103,9 +103,10 @@ public class NumberGui extends Application {
 	}
 	private void restartGame()
 	{
-		initGame();
 		this.gamePane.reset();
 		this.gameIsLost=false;
+		initGame();
+		
 		//this.gamePane.showFadingMessage("Resseting");
 		
 	}
