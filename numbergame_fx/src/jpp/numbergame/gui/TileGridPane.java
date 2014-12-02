@@ -2,14 +2,18 @@ package jpp.numbergame.gui;
 
 import java.util.List;
 
+import javafx.animation.FadeTransition;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.util.Duration;
+import jpp.numbergame.Coordinate2D;
 import jpp.numbergame.Move;
 import jpp.numbergame.Tile;
 
@@ -24,6 +28,54 @@ public class TileGridPane extends Pane {
 		myTableRows=height;
 		myTableColumns=width;
 		this.myTiles= new NumberRectangle[myTableRows][myTableColumns];
+		createLines();
+
+        this.widthProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {   
+            	
+            	for(NumberRectangle[] temp_line : myTiles)
+            	for (NumberRectangle temp : temp_line) {
+        			if(temp != null)
+        			{
+        				temp.getxProperty().set(tileWidthBinding().multiply(temp.getX()).doubleValue());
+
+        			}
+        		}
+            	
+            	
+                //System.out.println("TileGridPane width changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
+            }
+
+
+        });
+        this.heightProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+            	
+            	for(NumberRectangle[] temp_line : myTiles)
+                	for (NumberRectangle temp : temp_line) {
+            			if(temp != null)
+            			{
+            				temp.getyProperty().set(tileHeightBinding().multiply(temp.getY()).doubleValue());
+
+            			}
+            		}
+            	
+                //System.out.println("TileGridPane height changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
+            }
+
+
+        });
+		
+		
+		//System.out.println("TileGridPane width:"+this.getWidth()+".");
+		//System.out.println("Created TileGridPane with tileWidth:"+this.tileHeightBinding().doubleValue() +".");
+	}
+	private void createLines()
+	{
 		ObservableDoubleValue moo = this.widthProperty().divide(400).add(1);
 		DoubleBinding myStrokeWidthBinding=new DoubleBinding() {
 		     {super.bind(moo);}
@@ -86,29 +138,6 @@ public class TileGridPane extends Pane {
 			
 			this.getChildren().add(myLine);
 		}
-
-        this.widthProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {           	
-                System.out.println("TileGridPane width changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
-            }
-
-
-        });
-        this.heightProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
-                System.out.println("TileGridPane height changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
-            }
-
-
-        });
-		
-		
-		System.out.println("TileGridPane width:"+this.getWidth()+".");
-		System.out.println("Created TileGridPane with tileWidth:"+this.tileHeightBinding().doubleValue() +".");
 	}
 	public DoubleBinding tileWidthBinding()
 	{
@@ -128,37 +157,32 @@ public class TileGridPane extends Pane {
 		else
 		{
 			this.myTiles[x][y]=new NumberRectangle(x,y,value);
-			ObservableDoubleValue myLayoutXObservable = tileWidthBinding().multiply(x).add(myPadding/2.0);
-			DoubleBinding myLayoutXDoubleBinding=new DoubleBinding() {
-			     {super.bind(myLayoutXObservable);}
-				@Override
-				protected double computeValue() {
-					return myLayoutXObservable.doubleValue();
-				}
-			};
-			this.myTiles[x][y].layoutXProperty().bind(myLayoutXDoubleBinding);
-			ObservableDoubleValue myLayoutYObservable = tileHeightBinding().multiply(y).add(myPadding/2.0);
-			DoubleBinding myLayoutYDoubleBinding=new DoubleBinding() {
-			     {super.bind(myLayoutYObservable);}
-				@Override
-				protected double computeValue() {
-					return myLayoutYObservable.doubleValue();
-				}
-			};
-			this.myTiles[x][y].layoutYProperty().bind(myLayoutYDoubleBinding);
-			this.myTiles[x][y].getRectHeightProperty().bind(tileHeightBinding().subtract(myPadding));
-			this.myTiles[x][y].getRectWidthProperty().bind(tileWidthBinding().subtract(myPadding));
+//			ObservableDoubleValue myLayoutXObservable = tileWidthBinding().multiply(x);
+//			DoubleBinding myLayoutXDoubleBinding=new DoubleBinding() {
+//			     {super.bind(myLayoutXObservable);}
+//				@Override
+//				protected double computeValue() {
+//					return myLayoutXObservable.doubleValue();
+//				}
+//			};
+//			this.myTiles[x][y].getxProperty().bind(myLayoutXDoubleBinding);
+//			ObservableDoubleValue myLayoutYObservable = tileHeightBinding().multiply(y);//.add(myPadding/2.0);
+//			DoubleBinding myLayoutYDoubleBinding=new DoubleBinding() {
+//			     {super.bind(myLayoutYObservable);}
+//				@Override
+//				protected double computeValue() {
+//					return myLayoutYObservable.doubleValue();
+//				}
+//			};
+//			this.myTiles[x][y].getyProperty().bind(myLayoutYDoubleBinding);
+			this.myTiles[x][y].getxProperty().set(tileWidthBinding().multiply(x).doubleValue());
+			this.myTiles[x][y].getyProperty().set(tileHeightBinding().multiply(y).doubleValue());
+			this.myTiles[x][y].getRectHeightProperty().bind(tileHeightBinding().subtract(0));
+			this.myTiles[x][y].getRectWidthProperty().bind(tileWidthBinding().subtract(0));
 			this.getChildren().add(this.myTiles[x][y].getMyEnclosedRect());
 			this.getChildren().add(this.myTiles[x][y].getMyText());
-			
-//			//EXTRA DEBUG
-//			Rectangle myTestRectangle=new Rectangle();
-//			myTestRectangle.setX(100);
-//			myTestRectangle.setY(100);
-//			myTestRectangle.setWidth(10);
-//			myTestRectangle.setHeight(10);
-//			this.getChildren().add(myTestRectangle);
-			
+			this.myTiles[x][y].getxProperty().unbind();
+			this.myTiles[x][y].getyProperty().unbind();
 		}
 	}
 	public void moveRectangles(List<Move> moves)
@@ -174,16 +198,47 @@ public class TileGridPane extends Pane {
 		y_Origin=move.getFrom().getY();
 		x_Destination=move.getTo().getX();
 		y_Destination=move.getTo().getY();
-		this.myTiles[x_Origin][y_Origin].moveTo(x_Destination,y_Destination);
-		Tile newTile=new Tile(move.getTo(), myTiles[x_Origin][y_Origin].getValue());
-		this.addRectangle(newTile);
-		//this.myTiles[x_Origin][y_Origin]=null;
-		//this.getChildren().remove(index)
-		//this.myTiles[x_Destination][y_Destination]=this.myTiles[x_Origin][y_Origin].
+		NumberRectangle from=this.myTiles[x_Origin][y_Origin];
+		NumberRectangle to=this.myTiles[x_Destination][y_Destination];
+		from.moveTo(x_Destination,y_Destination);
+		
+		if (move.isMerge())
+		{
+			FadeTransition fadeTransition = new FadeTransition(Duration.millis(150), to);
+			fadeTransition.setFromValue(1d);
+			fadeTransition.setToValue(0d);
+			fadeTransition.play();
+			this.getChildren().remove(to.getMyEnclosedRect());
+			this.getChildren().remove(to.getMyText());
+			to=null;
+			from.setValue(move.getNewValue());
+		}
+		else
+		{	
+			
+		}
+		this.myTiles[x_Origin][y_Origin]=null;
+		this.myTiles[x_Destination][y_Destination]=from;
+		//.moveTo(x_Destination,y_Destination);
+
+		
+
 	}
 	public void reset()
 	{
-		for (int i=0;i<myTableRows;i++) for (int j=0;j<myTableColumns;j++) myTiles[i][j]=null;
-		//this.getChildren().clear();
+//		for (Object temp : this.getChildren()) {
+//			if (temp instanceof NumberRectangle)
+//			{
+//				
+//				this.getChildren().remove(temp);
+//			}
+//		}
+		this.getChildren().clear();
+		for (int i=0;i<myTableRows;i++) for (int j=0;j<myTableColumns;j++) 
+			{
+			myTiles[i][j]=null;
+			}
+		createLines();
 	}
 }
+
