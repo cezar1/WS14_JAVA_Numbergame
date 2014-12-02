@@ -47,11 +47,12 @@ public class NumberGui extends Application {
 		HBox myTopBar=new HBox();
 		myTopBar.setStyle("-fx-background-color: palegoldenrod; -fx-font-size:1.5em");
 		Label myLabelPoints=new Label();
-		myLabelPoints.setText("Points");
+		myLabelPoints.setText("Points: ");
 		//Label pointsValue=new Label();
 		pointsValue.setText("0");
-		pointsValue.setStyle("-fx-font-weight: bold; -fx-textfill:darkred;");
-		myTopBar.getChildren().add(myLabelPoints);myTopBar.getChildren().add(pointsValue);
+		pointsValue.setStyle("-fx-font-weight: bold; -fx-text-fill: darkred;");
+		myTopBar.getChildren().add(myLabelPoints);
+		myTopBar.getChildren().add(pointsValue);
 		myRootPane.setTop(myTopBar);
 		
 		

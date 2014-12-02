@@ -33,7 +33,18 @@ public class TileGridPane extends Pane {
         this.widthProperty().addListener(new ChangeListener<Number>() {
 
             @Override
-            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {           	
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {   
+            	
+            	for(NumberRectangle[] temp_line : myTiles)
+            	for (NumberRectangle temp : temp_line) {
+        			if(temp != null)
+        			{
+        				temp.getxProperty().set(tileWidthBinding().multiply(temp.getX()).doubleValue());
+
+        			}
+        		}
+            	
+            	
                 //System.out.println("TileGridPane width changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
             }
 
@@ -43,6 +54,16 @@ public class TileGridPane extends Pane {
 
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+            	
+            	for(NumberRectangle[] temp_line : myTiles)
+                	for (NumberRectangle temp : temp_line) {
+            			if(temp != null)
+            			{
+            				temp.getyProperty().set(tileHeightBinding().multiply(temp.getY()).doubleValue());
+
+            			}
+            		}
+            	
                 //System.out.println("TileGridPane height changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
             }
 
@@ -136,24 +157,26 @@ public class TileGridPane extends Pane {
 		else
 		{
 			this.myTiles[x][y]=new NumberRectangle(x,y,value);
-			ObservableDoubleValue myLayoutXObservable = tileWidthBinding().multiply(x).add(myPadding/2.0);
-			DoubleBinding myLayoutXDoubleBinding=new DoubleBinding() {
-			     {super.bind(myLayoutXObservable);}
-				@Override
-				protected double computeValue() {
-					return myLayoutXObservable.doubleValue();
-				}
-			};
-			this.myTiles[x][y].getxProperty().bind(myLayoutXDoubleBinding);
-			ObservableDoubleValue myLayoutYObservable = tileHeightBinding().multiply(y);//.add(myPadding/2.0);
-			DoubleBinding myLayoutYDoubleBinding=new DoubleBinding() {
-			     {super.bind(myLayoutYObservable);}
-				@Override
-				protected double computeValue() {
-					return myLayoutYObservable.doubleValue();
-				}
-			};
-			this.myTiles[x][y].getyProperty().bind(myLayoutYDoubleBinding);
+//			ObservableDoubleValue myLayoutXObservable = tileWidthBinding().multiply(x);
+//			DoubleBinding myLayoutXDoubleBinding=new DoubleBinding() {
+//			     {super.bind(myLayoutXObservable);}
+//				@Override
+//				protected double computeValue() {
+//					return myLayoutXObservable.doubleValue();
+//				}
+//			};
+//			this.myTiles[x][y].getxProperty().bind(myLayoutXDoubleBinding);
+//			ObservableDoubleValue myLayoutYObservable = tileHeightBinding().multiply(y);//.add(myPadding/2.0);
+//			DoubleBinding myLayoutYDoubleBinding=new DoubleBinding() {
+//			     {super.bind(myLayoutYObservable);}
+//				@Override
+//				protected double computeValue() {
+//					return myLayoutYObservable.doubleValue();
+//				}
+//			};
+//			this.myTiles[x][y].getyProperty().bind(myLayoutYDoubleBinding);
+			this.myTiles[x][y].getxProperty().set(tileWidthBinding().multiply(x).doubleValue());
+			this.myTiles[x][y].getyProperty().set(tileHeightBinding().multiply(y).doubleValue());
 			this.myTiles[x][y].getRectHeightProperty().bind(tileHeightBinding().subtract(0));
 			this.myTiles[x][y].getRectWidthProperty().bind(tileWidthBinding().subtract(0));
 			this.getChildren().add(this.myTiles[x][y].getMyEnclosedRect());
