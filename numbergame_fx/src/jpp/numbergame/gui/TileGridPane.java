@@ -34,7 +34,7 @@ public class TileGridPane extends Pane {
 
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {           	
-                System.out.println("TileGridPane width changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
+                //System.out.println("TileGridPane width changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
             }
 
 
@@ -43,15 +43,15 @@ public class TileGridPane extends Pane {
 
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
-                System.out.println("TileGridPane height changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
+                //System.out.println("TileGridPane height changed from "+t.doubleValue()+" to "+t1.doubleValue()+".");
             }
 
 
         });
 		
 		
-		System.out.println("TileGridPane width:"+this.getWidth()+".");
-		System.out.println("Created TileGridPane with tileWidth:"+this.tileHeightBinding().doubleValue() +".");
+		//System.out.println("TileGridPane width:"+this.getWidth()+".");
+		//System.out.println("Created TileGridPane with tileWidth:"+this.tileHeightBinding().doubleValue() +".");
 	}
 	private void createLines()
 	{
